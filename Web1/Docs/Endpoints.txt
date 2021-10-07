@@ -1,0 +1,10 @@
+Desc - Method - Path - Parameter - Body - Query String
+Create a user acc - POST - Users - x - user - x
+get a user acc - GET - Users/{userName} - username - x - x
+send a message - POST - Messages/{toId}/{fromId} - sender's id and receiver's id - Message - x
+get all Messages - GET - Messages/{userName} - userName - x - x
+add to shopping cart - POST - ShoppingCarts/{userName} - username - ShoppingCart - x
+get ShoppingCart - GET - ShoppingCarts/{userName} - userName - x - x
+checkout - POST - ShoppingCarts/checkout/{username} - username - x - x
+get receipts - GET - Receipts/{username} - username - x - x 
+get total spent - GET - Receipts/total/{username} - username - x - x 

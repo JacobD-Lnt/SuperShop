@@ -1,0 +1,6 @@
+Desc - Method - Path - Parameter - Body - Query String
+Create a product - POST  - Products - x - product - x
+Update product - PATCH - Products/{id} - id - updated product - x
+get all Products - GET - Products - x - x - x
+get a product - GET - Products/{id} - id - x - x
+get the most popular - GET - Products/popular - x - x - x
