@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Text.Json;
+using System.Dynamic;
 
 namespace Web2
 {
@@ -52,7 +53,7 @@ namespace Web2
             var product = _repository.GetProduct(Id);
             await _repository.UpdateProduct(Id, productDto);
             await _repository.SaveAsync();
-            return CreatedAtAction("GetProduct", new { product.Id }, product);
+            return CreatedAtAction("GetProduct", new { product.Id }, product );
         }
     }
 }

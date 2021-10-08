@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 namespace test.Web1.Controllers
 {
@@ -80,18 +81,6 @@ namespace test.Web1.Controllers
             var result = await _controller.GetAllMessages(receiver.Username);
             var okResult = result as OkObjectResult;
             okResult.StatusCode.Should().Be(200);
-        }
-        [Fact]
-        public async Task ShouldCreateShoppingCart()
-        {
-            User user = new User() { Username = Guid.NewGuid().ToString(), Name = "John" };
-            _mockRepository.Setup(obj => obj.GetUser(user.Username)).Returns(Task.FromResult(new User() { Username = user.Username, Name = "John" }));
-            var newGuid = Guid.NewGuid();
-            var result = await _controller.CreateCartItem(user.Username, newGuid);
-            var createdActionResult = result as CreatedAtActionResult;
-            createdActionResult.StatusCode.Should().Be(201);
-            createdActionResult.ActionName.Should().Be("GetCartItems");
-            createdActionResult.RouteValues["userName"].Should().NotBeNull();
         }
         [Fact]
         public async Task ShouldGetShoppingCartItems()

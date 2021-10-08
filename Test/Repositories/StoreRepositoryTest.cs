@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Web1;
+using Moq;
 
 namespace test.Web1.Repositories
 {
@@ -100,12 +101,26 @@ namespace test.Web1.Repositories
             User user = new User() { Username = Guid.NewGuid().ToString() };
             await _repo.CreateUser(user);
             await _repo.SaveAsync();
-            var productId = Guid.NewGuid();
+            var productId = new Guid("C2C41FAE-5C90-4D17-BD00-2E53B8B48A28");
             var cart = new ShoppingCart { Id = Guid.NewGuid(), ProductId = productId, Quantity = 1, User = user };
             await _repo.AddToShoppingCart(cart);
             await _repo.SaveAsync();
             var newCart = await _repo.GetShoppingCart(user);
             newCart.Count().Should().Be(1);
         }
+        // [Fact]
+        // public async Task CheckoutAndPerformRequiredActionOnDb()
+        // {
+        //     User user = new User() { Username = Guid.NewGuid().ToString() };
+        //     await _repo.CreateUser(user);
+        //     await _repo.SaveAsync();
+        //     var productId = Guid.NewGuid();
+        //     var cart = new ShoppingCart { Id = Guid.NewGuid(), ProductId = productId, Quantity = 1, User = user };
+        //     await _repo.AddToShoppingCart(cart);
+        //     await _repo.SaveAsync();
+        //     var receipt = await _repo.Checkout(user);
+        //     _db.ShoppingCarts.Count().Should().Be(0);
+        //     _db.Receipts.Count().Should().Be(1);
+        // }
     }
 }

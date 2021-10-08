@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Text.Json;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace Web1
 {
@@ -61,7 +63,9 @@ namespace Web1
         {
             var user = await _repository.GetUser(userName);
             if (user is null) return NotFound();
-            var newCart = new ShoppingCart() { Id = Guid.NewGuid(), ProductId = productId, Quantity = 1, User = user };
+            var client = new HttpClient();
+            var newCart = await _repository.checkQuantity(client, user, productId);
+            if(newCart is null) return BadRequest();
             await _repository.AddToShoppingCart(newCart);
             await _repository.SaveAsync();
             return CreatedAtAction("GetCartItems", new { user.Username }, newCart);
@@ -73,6 +77,38 @@ namespace Web1
             if (user is null) return NotFound();
             var cartItems = await _repository.GetShoppingCart(user);
             return Ok(cartItems);
+        }
+        [HttpPost("Cart/checkout/{username}")]
+        public async Task<IActionResult> Checkout(string userName)
+        {
+            var user = await _repository.GetUser(userName);
+            if (user is null) return NotFound();
+            var receipts = await _repository.Checkout(user);
+            await _repository.SaveAsync();
+           return CreatedAtAction("GetAllReceipts", new { user.Username }, receipts);
+        }
+        [HttpGet("Users/{username}/receipts")]
+        public async Task<IActionResult> GetAllReceipts(string userName)
+        {
+            var user = await _repository.GetUser(userName);
+            if (user is null) return NotFound();
+            var receipts = await _repository.GetReceipts(user);
+            return Ok(receipts);
+        }
+        [HttpGet("Users/{username}/receipts/{id}")]
+        public async Task<IActionResult> GetReceipt(string userName, Guid id)
+        {
+            var user = await _repository.GetUser(userName);
+            if (user is null) return NotFound();
+            var receipt = await _repository.GetReceipt(id);
+            return Ok(receipt);
+        }
+        [HttpGet("Users/{username}/receipts/total")]
+        public async Task<IActionResult> GetTotalSpent(string userName){
+            var user = await _repository.GetUser(userName);
+            if (user is null) return NotFound();
+            var totalSpent = await _repository.GetTotalSpent(user);
+            return Ok(totalSpent);
         }
     }
 
