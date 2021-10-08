@@ -5,13 +5,14 @@ using Web1;
 
 namespace test.Web1.Models
 {
-  public class ShoppingCartTest
-  {
-    [Fact]
-    public void ShouldCreateShoppingCart()
+    public class ShoppingCartTest
     {
-        ShoppingCart shoppingCart = new ShoppingCart(){ ProductId = "1A2B"};
-        shoppingCart.ProductId.Should().Be("1A2B");
+        [Fact]
+        public void ShouldCreateShoppingCart()
+        {
+            var newGuid = Guid.NewGuid();
+            ShoppingCart shoppingCart = new ShoppingCart() { ProductId = newGuid };
+            shoppingCart.ProductId.Should().Be(newGuid);
+        }
     }
-  }
 }

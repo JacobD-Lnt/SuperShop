@@ -9,7 +9,7 @@ using Web1;
 namespace Web1.Migrations
 {
     [DbContext(typeof(Database))]
-    [Migration("20211008141516_Initial")]
+    [Migration("20211008163532_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,7 +76,7 @@ namespace Web1.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProductId")
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Quantity")
