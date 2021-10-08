@@ -83,16 +83,29 @@ namespace test.Web1.Repositories
             allMessages.Count().Should().Be(1);
         }
         [Fact]
-        public async Task MakeShoppingCartAndAddShoppingCartToDb()
+        public async Task MakeShoppingCartAndAddToDb()
         {
             User user = new User() { Username = Guid.NewGuid().ToString() };
             await _repo.CreateUser(user);
             await _repo.SaveAsync();
             var productId = Guid.NewGuid();
-            var newCart = new ShoppingCart { Id = Guid.NewGuid(), ProductId = productId, Quantity = 1, User = user };
-            await _repo.AddToShoppingCart(newCart);
+            var cart = new ShoppingCart { Id = Guid.NewGuid(), ProductId = productId, Quantity = 1, User = user };
+            await _repo.AddToShoppingCart(cart);
             await _repo.SaveAsync();
             _db.ShoppingCarts.Count().Should().Be(1);
+        }
+        [Fact]
+        public async Task GetShoppingCartFromDb()
+        {
+            User user = new User() { Username = Guid.NewGuid().ToString() };
+            await _repo.CreateUser(user);
+            await _repo.SaveAsync();
+            var productId = Guid.NewGuid();
+            var cart = new ShoppingCart { Id = Guid.NewGuid(), ProductId = productId, Quantity = 1, User = user };
+            await _repo.AddToShoppingCart(cart);
+            await _repo.SaveAsync();
+            var newCart = await _repo.GetShoppingCart(user);
+            newCart.Count().Should().Be(1);
         }
     }
 }

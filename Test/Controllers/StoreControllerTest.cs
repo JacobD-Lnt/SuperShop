@@ -14,19 +14,22 @@ using Microsoft.AspNetCore.Http;
 
 namespace test.Web1.Controllers
 {
-    public class StoreControllerTest{
+    public class StoreControllerTest
+    {
         private StoreController _controller;
         private Mock<IStoreRepository> _mockRepository;
         private DefaultHttpContext _httpContext;
-        public StoreControllerTest(){
+        public StoreControllerTest()
+        {
             _mockRepository = new Mock<IStoreRepository>();
             _httpContext = new DefaultHttpContext();
             _controller = new StoreController(_mockRepository.Object);
-            { ControllerContext ControllerContext = new ControllerContext() { HttpContext = _httpContext}; }
+            { ControllerContext ControllerContext = new ControllerContext() { HttpContext = _httpContext }; }
         }
         [Fact]
-        public async Task ShouldCreateUser(){
-            UserDto dto = new UserDto(){ Name = "John"};
+        public async Task ShouldCreateUser()
+        {
+            UserDto dto = new UserDto() { Name = "John" };
             var result = await _controller.CreateUser(dto);
             var createdActionResult = result as CreatedAtActionResult;
             createdActionResult.StatusCode.Should().Be(201);
@@ -47,11 +50,11 @@ namespace test.Web1.Controllers
         [Fact]
         public async Task ShouldSendMessage()
         {
-            MessageDto dto = new MessageDto(){ Text = "simple text"};
-            User receiver = new User(){ Username = Guid.NewGuid().ToString(), Name="John"};
-            User sender = new User(){ Username = Guid.NewGuid().ToString(), Name="Jane"};
-            _mockRepository.Setup(obj => obj.GetUser(receiver.Username)).Returns(Task.FromResult(new User(){ Username = receiver.Username, Name="John"}));
-            _mockRepository.Setup(obj => obj.GetUser(sender.Username)).Returns(Task.FromResult(new User(){ Username = sender.Username, Name="John"}));
+            MessageDto dto = new MessageDto() { Text = "simple text" };
+            User receiver = new User() { Username = Guid.NewGuid().ToString(), Name = "John" };
+            User sender = new User() { Username = Guid.NewGuid().ToString(), Name = "Jane" };
+            _mockRepository.Setup(obj => obj.GetUser(receiver.Username)).Returns(Task.FromResult(new User() { Username = receiver.Username, Name = "John" }));
+            _mockRepository.Setup(obj => obj.GetUser(sender.Username)).Returns(Task.FromResult(new User() { Username = sender.Username, Name = "John" }));
             var result = await _controller.SendAMessage(receiver.Username, sender.Username, dto);
             var createdActionResult = result as CreatedAtActionResult;
             createdActionResult.StatusCode.Should().Be(201);
@@ -72,9 +75,30 @@ namespace test.Web1.Controllers
         [Fact]
         public async Task ShouldGetAllMessagesForAUser()
         {
-            User receiver = new User(){ Username = Guid.NewGuid().ToString(), Name="John"};
-            _mockRepository.Setup(obj => obj.GetUser(receiver.Username)).Returns(Task.FromResult(new User(){ Username = receiver.Username, Name="John"}));
+            User receiver = new User() { Username = Guid.NewGuid().ToString(), Name = "John" };
+            _mockRepository.Setup(obj => obj.GetUser(receiver.Username)).Returns(Task.FromResult(new User() { Username = receiver.Username, Name = "John" }));
             var result = await _controller.GetAllMessages(receiver.Username);
+            var okResult = result as OkObjectResult;
+            okResult.StatusCode.Should().Be(200);
+        }
+        [Fact]
+        public async Task ShouldCreateShoppingCart()
+        {
+            User user = new User() { Username = Guid.NewGuid().ToString(), Name = "John" };
+            _mockRepository.Setup(obj => obj.GetUser(user.Username)).Returns(Task.FromResult(new User() { Username = user.Username, Name = "John" }));
+            var newGuid = Guid.NewGuid();
+            var result = await _controller.CreateCartItem(user.Username, newGuid);
+            var createdActionResult = result as CreatedAtActionResult;
+            createdActionResult.StatusCode.Should().Be(201);
+            createdActionResult.ActionName.Should().Be("GetCartItems");
+            createdActionResult.RouteValues["userName"].Should().NotBeNull();
+        }
+        [Fact]
+        public async Task ShouldGetShoppingCartItems()
+        {
+            User user = new User() { Username = Guid.NewGuid().ToString(), Name = "John" };
+            _mockRepository.Setup(obj => obj.GetUser(user.Username)).Returns(Task.FromResult(new User() { Username = user.Username, Name = "John" }));
+            var result = await _controller.GetCartItems(user.Username);
             var okResult = result as OkObjectResult;
             okResult.StatusCode.Should().Be(200);
         }

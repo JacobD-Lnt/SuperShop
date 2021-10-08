@@ -53,6 +53,13 @@ namespace Web1
         {
             return await _db.ShoppingCarts.Where(s => s.User.Username == user.Username).ToListAsync();
         }
+        public async Task Checkout(User user)
+        {
+            var client = new HttpClient();
+
+            var checkoutItems = await _db.ShoppingCarts.Where(s => s.User.Username == user.Username).ToListAsync();
+            _db.RemoveRange(checkoutItems);
+        }
         public async Task SaveAsync()
         {
             await _db.SaveChangesAsync();
