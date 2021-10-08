@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using System.Linq;
 
@@ -10,8 +11,10 @@ namespace Web1
         [Key]
         public string Username {get; set;}
         public string Name {get; set;}
-        [JsonIgnore]
+        [InverseProperty("Receiver")]
         public List<Message> Inbox {get; set;}
+        [InverseProperty("Sender")]
+        public List<Message> Sent {get; set;}
         [JsonIgnore]
         public List<ShoppingCart> ShoppingCarts {get; set;}
         [JsonIgnore]

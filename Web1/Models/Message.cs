@@ -9,16 +9,18 @@ namespace Web1
         
         public Guid Id {get; set;}
         public string Text {get; set;}
+        [JsonIgnore]
         public User Receiver {get; set;}
-        public string Sender {get; set;}
+        [JsonIgnore]
+        public User Sender {get; set;}
         public Message(){
-            Sender = "";
+            Sender = new();
             Receiver = new();
         }
         public Message(MessageDto messageDto){ 
             Id = Guid.NewGuid();
             Text = messageDto.Text;
-            Sender = "";
+            Sender = new();
             Receiver = new();
         }
     }

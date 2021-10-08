@@ -25,15 +25,21 @@ namespace Web1.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Text = table.Column<string>(type: "TEXT", nullable: true),
-                    ToUsername = table.Column<string>(type: "TEXT", nullable: true),
-                    From = table.Column<string>(type: "TEXT", nullable: true)
+                    ReceiverUsername = table.Column<string>(type: "TEXT", nullable: true),
+                    SenderUsername = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Messages_Users_ToUsername",
-                        column: x => x.ToUsername,
+                        name: "FK_Messages_Users_ReceiverUsername",
+                        column: x => x.ReceiverUsername,
+                        principalTable: "Users",
+                        principalColumn: "Username",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Messages_Users_SenderUsername",
+                        column: x => x.SenderUsername,
                         principalTable: "Users",
                         principalColumn: "Username",
                         onDelete: ReferentialAction.Restrict);
@@ -82,9 +88,14 @@ namespace Web1.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ToUsername",
+                name: "IX_Messages_ReceiverUsername",
                 table: "Messages",
-                column: "ToUsername");
+                column: "ReceiverUsername");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_SenderUsername",
+                table: "Messages",
+                column: "SenderUsername");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Receipts_Username",

@@ -9,7 +9,7 @@ using Web1;
 namespace Web1.Migrations
 {
     [DbContext(typeof(Database))]
-    [Migration("20211007181441_Initial")]
+    [Migration("20211008141516_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,18 +24,20 @@ namespace Web1.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("From")
+                    b.Property<string>("ReceiverUsername")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SenderUsername")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ToUsername")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ToUsername");
+                    b.HasIndex("ReceiverUsername");
+
+                    b.HasIndex("SenderUsername");
 
                     b.ToTable("Messages");
                 });
@@ -105,11 +107,17 @@ namespace Web1.Migrations
 
             modelBuilder.Entity("Web1.Message", b =>
                 {
-                    b.HasOne("Web1.User", "To")
+                    b.HasOne("Web1.User", "Receiver")
                         .WithMany("Inbox")
-                        .HasForeignKey("ToUsername");
+                        .HasForeignKey("ReceiverUsername");
 
-                    b.Navigation("To");
+                    b.HasOne("Web1.User", "Sender")
+                        .WithMany("Sent")
+                        .HasForeignKey("SenderUsername");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Web1.Receipt", b =>
@@ -135,6 +143,8 @@ namespace Web1.Migrations
                     b.Navigation("Inbox");
 
                     b.Navigation("Receipts");
+
+                    b.Navigation("Sent");
 
                     b.Navigation("ShoppingCarts");
                 });
